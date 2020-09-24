@@ -1,0 +1,13 @@
+
+# Log files
+*.log
+*.cfg
+
+# Server files and backups
+/serverFiles/*
+/backups/*
+
+# Exceptions
+!backups/config_backups_model.cfg
+!config_model.cfg
+!serverFiles/README.md
