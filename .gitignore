@@ -11,3 +11,4 @@
 !backups/config_backups_model.cfg
 !config_model.cfg
 !serverFiles/README.md
+!serverFiles/testServer.sh

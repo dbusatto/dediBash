@@ -1,4 +1,6 @@
 #!/usr/bin/expect
+
+# 7dtd?
 set timeout 20
 
 spawn telnet localhost 8081

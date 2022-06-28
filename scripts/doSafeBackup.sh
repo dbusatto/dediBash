@@ -1,19 +1,34 @@
 #!/bin/bash
 # do a safe backup of the server, all path relative to dediBash folder
-if [ ! -f config.cfg ] || [ ! -r config.cfg ]; then
-  echo "bad directory: $(pwd)"
+parentDir="$(pwd)"
+
+backupsDir="${parentDir}/serverBackups"
+logsDir="${parentDir}/serverLogs"
+tmpDir="${parentDir}/serverTmp"
+config_file="${parentDir}/config.cfg"
+
+if [[ $1 = --config ]]; then
+  shift
+  config_file="$1"
+  shift
+fi
+if [[ ! -f $config_file ]] || [[ ! -r $config_file ]] || [[ ! -x $config_file ]]; then
+  myecho "file ${config_file} not found from directory ${parentDir} or has bad permissions (needs at least r-x)"
   exit 1
 fi
-position="$(pwd)"
-. config.cfg
+. "${config_file}"
+if [[ -n $screenName ]]; then
+  myecho "bad config load, no screenName found"
+  exit 1
+fi
 backupScreenName="${screenName}Backup"
 updateScreenName="${screenName}Update"
 myecho() {
   echo "$1"
-  echo "$1" >> serverScreensLog.log
+  echo "$1" >> "${logsDir}/serverScreensLog.log"
 }
 sleepTime=0
-if [ "$1" = --sleep ]; then
+if [[ $1 = --sleep ]]; then
   shift
   pattern='^([0-9]+)$'
   if [[ "$1" =~ $pattern ]]; then
@@ -24,34 +39,34 @@ if [ "$1" = --sleep ]; then
     exit 1
   fi
 fi
-sleep "$sleepTime"
+sleep "${sleepTime}"
 wait_update=false
-if [ "$1" = --wait-update ]; then
+if [[ $1 = --wait-update ]]; then
   shift
   wait_update="$1"
   shift
 fi
 full_backup=false
-if [ "$1" = --full-backup ]; then
+if [[ $1 = --full-backup ]]; then
   shift
   full_backup="$1"
   shift
 fi
 
-if [ "$#" -ne 0 ]; then
+if [[ $# -ne 0 ]]; then
   myecho "unsupported args $@"
   exit 1
 fi
 i=0
 if screen -ls "${updateScreenName}" | grep -q "\.${updateScreenName}\s"; then
-  if [ "${wait_update}" = false ]; then
+  if [[ $wait_update = false ]]; then
     myecho "server update running!"
     exit 1
   else
     myecho "waiting for update to end before performing backup"
     server_stopped=false
-    while [ "$i" -lt "${backupTimeout}" ] && [ "${server_stopped}" = false ]; do
-      if [ "$i" -ne 0 ] && [[ "$i" == *0 ]]; then
+    while [[ $i -lt $backupTimeout ]] && [[ $server_stopped = false ]]; do
+      if [[ $i -ne 0 ]] && [[ $i = *0 ]]; then
         echo "update server still running after ${i}s"
       fi
       sleep 1
@@ -71,8 +86,8 @@ fi
 if screen -ls "${screenName}" | grep -q "\.${screenName}\s"; then
   server_running=true
   server_stopped=false
-  while [ "$i" -lt "${backupTimeout}" ] && [ "${server_stopped}" = false ]; do
-    if [ "$i" -ne 0 ] && [[ "$i" == *0 ]]; then
+  while [[ $i -lt $backupTimeout ]] && [[ $server_stopped = false ]]; do
+    if [[ $i -ne 0 ]] && [[ $i = *0 ]]; then
       echo "server still running after ${i}s"
     fi
     sleep 1
@@ -90,9 +105,9 @@ if screen -ls "${screenName}" | grep -q "\.${screenName}\s"; then
 else
   server_running=false
 fi
-if [ "${full_backup}" = false ]; then
+if [[ $full_backup = false ]]; then
   myecho "backup of ${backupName} started at $(date)"
-  scripts/doBackup.sh "${backupTarget}" "${backupName}"
+  scripts/doBackup.sh "${backupTarget}" "${backupName}" # TODO
   stop_status="$?"
 else
   myecho "backup of ${fullBackupName} started at $(date)"

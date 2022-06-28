@@ -32,4 +32,3 @@ elif [ "${ifNeeded}" = false ]; then
   ./myServer.sh backup ${backupOpts}
 fi
 exit 0
-
