@@ -10,7 +10,7 @@ fi
 cd "$dirtyParentDir"
 
 parentDir="$(pwd)"
-scriptsDir="${binDir}/scripts"
+scriptsDir="${binDir}/utils"
 backupsDir="${parentDir}/serverBackups"
 logsDir="${parentDir}/serverLogs"
 tmpDir="${parentDir}/serverTmp"

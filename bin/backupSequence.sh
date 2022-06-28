@@ -10,7 +10,7 @@ fi
 cd "$dirtyParentDir"
 
 parentDir="$(pwd)"
-scriptsDir="${binDir}/scripts"
+scriptsDir="${binDir}/utils"
 backupsDir="${parentDir}/serverBackups"
 logsDir="${parentDir}/serverLogs"
 tmpDir="${parentDir}/serverTmp"
@@ -45,17 +45,18 @@ if [[ $1 = --if-needed ]]; then
   shift
   ifNeeded=true
 fi
+backupOpts=""
+if [[ $1 = --full-backup ]]; then
+  shift
+  backupOpts="--full-backup"
+fi
 if screen -ls "${screenName}" | grep -q "\.${screenName}\s"; then
-  "${binDir}/myServer.sh" stop --config "${config_file}"
+  "${binDir}/dediBash.sh" stop --config "${config_file}"
   sleep 1
-  "${binDir}/myServer.sh" backup --config "${config_file}" --wait-server --full-backup
+  "${binDir}/dediBash.sh" backup --config "${config_file}" --wait-server "${backupOpts}"
   sleep 1
-  "${binDir}/myServer.sh" update --config "${config_file}" --wait-server --wait-backup
-  sleep 1
-  "${binDir}/myServer.sh" start --config "${config_file}" --wait-server --wait-backup --wait-update
+  "${binDir}/dediBash.sh" start --config "${config_file}" --wait-server --wait-backup
 elif [ "${ifNeeded}" = false ]; then
-  "${binDir}/myServer.sh" backup --config "${config_file}" --full-backup
-  sleep 1
-  "${binDir}/myServer.sh" update --config "${config_file}" --wait-backup
+  "${binDir}/dediBash.sh" backup --config "${config_file}" "${backupOpts}"
 fi
 exit 0

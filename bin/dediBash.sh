@@ -17,7 +17,7 @@ fi
 cd "$dirtyParentDir"
 
 parentDir="$(pwd)"
-scriptsDir="${binDir}/scripts"
+scriptsDir="${binDir}/utils"
 backupsDir="${parentDir}/serverBackups"
 logsDir="${parentDir}/serverLogs"
 tmpDir="${parentDir}/serverTmp"
@@ -42,7 +42,7 @@ hardcopyFile="${tmpDir}/hardcopy"
 if [[ -e $hardcopyFile && ! -f $hardcopyFile ]]; then
   echo "${hardcopyFile} is not a file"
   exit 1
-fi 
+fi
 if [[ ! -e $backupDir ]]; then
   mkdir -p $backupDir
 elif [[ ! -d $backupDir ]]; then
@@ -174,7 +174,7 @@ elif [[ $action = start ]]; then
 #   # start
 #   if ! screen -ls "${screenName}2" | grep -q "\.${screenName}2\s"; then
 #     myecho "server ${screenName}2 told to start in ${sleepTime}s at $(date)"
-#     screen -dmS "${screenName}2" "scripts/runServer.sh" --config "${config_file}" --sleep "${sleepTime}" --wait-backup "${wait_backup}" --wait-update "${wait_update}" --cmd startCmdIsland
+#     screen -dmS "${screenName}2" "${scriptsDir}/runServer.sh" --config "${config_file}" --sleep "${sleepTime}" --wait-backup "${wait_backup}" --wait-update "${wait_update}" --cmd startCmdIsland
 #   else
 #     echo "server ${screenName}2 already running!"
 #     exit 1

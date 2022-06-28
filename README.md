@@ -23,7 +23,7 @@ the corresponding config files can be found in `/examples`.
 3) Find out what you need to do to stop it once it is running (press 'q', type '/quit' then press enter, ctrl+c etc)
 4) fill config.cfg accordingly
 
-You can now test `./myServer.sh start`, `./myServer.sh stop` and `./myServer.sh status`.
+You can now test `bin/dediBash.sh start`, `bin/dediBash.sh stop` and `bin/dediBash.sh status`.
 Status tells you if the server is currently running and prints its last cmd line output.
 
 ### For backup
