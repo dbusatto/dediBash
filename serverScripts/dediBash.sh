@@ -72,6 +72,10 @@ if [[ $# -lt 1 ]]; then
 fi
 action="$1"
 shift
+if [[ $1 = -h ]]; then
+  usage
+  exit 1
+fi
 if [[ $1 = --config ]]; then
   shift
   config_file="$1"
