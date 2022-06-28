@@ -10,21 +10,23 @@ cd "$(dirname "$dirtyServerScriptFile")"
 binDir="$(pwd)"
 
 dirtyParentDir="${binDir}/.."
-if [[ ! -d $dirtyParentDir ]] || [[ ! -r $dirtyParentDir ]]; then
-  echo "directory ${dirtyParentDir} not found or has bad permissions (needs at least r--)"
+if [[ ! -d $dirtyParentDir ]]; then
+  echo "directory ${dirtyParentDir} not found"
   exit 1
 fi
 cd "$dirtyParentDir"
 
 parentDir="$(pwd)"
-
+scriptsDir="${binDir}/scripts"
 backupsDir="${parentDir}/serverBackups"
 logsDir="${parentDir}/serverLogs"
 tmpDir="${parentDir}/serverTmp"
 config_file="${parentDir}/config.cfg"
 
+cd "${binDir}"
+
 if [[ ! -e $logsDir ]]; then
-  mkdir -p $logsDir
+  mkdir -p "$logsDir"
 elif [[ ! -d $logsDir ]]; then
   echo "$logsDir is not a directory"
   exit 1
@@ -37,6 +39,16 @@ elif [[ ! -d $tmpDir ]]; then
   exit 1
 fi
 hardcopyFile="${tmpDir}/hardcopy"
+if [[ -e $hardcopyFile && ! -f $hardcopyFile ]]; then
+  echo "${hardcopyFile} is not a file"
+  exit 1
+fi 
+if [[ ! -e $backupDir ]]; then
+  mkdir -p $backupDir
+elif [[ ! -d $backupDir ]]; then
+  echo "$backupDir is not a directory"
+  exit 1
+fi
 
 usage() {
   echo "usage : $(basename $0) action [--config FILE] [--msg TEXT] [--sleep TIME] [--wait-server] [--wait-backup] [--wait-update] [--full-backup]
@@ -108,7 +120,7 @@ if [[ $# -ne 0 ]]; then
   exit 1
 fi
 
-if [[ ! -f $config_file ]] || [[ ! -r $config_file ]] || [[ ! -x $config_file ]]; then
+if [[ ! -f $config_file || ! -r $config_file || ! -x $config_file ]]; then
   myecho "file ${config_file} not found from directory ${parentDir} or has bad permissions (needs at least r-x)"
   exit 1
 fi
@@ -117,7 +129,6 @@ if [[ -n $screenName ]]; then
   myecho "bad config load, no screenName found"
   exit 1
 fi
-# cd "${parentDir}"
 
 backupScreenName="${screenName}Backup"
 updateScreenName="${screenName}Update"
@@ -129,8 +140,8 @@ if screen -ls "${screenName}" | grep -q "\.${screenName}\s"; then
     myecho "waiting for server to stop before performing action"
     i=0
     server_stopped=false
-    while [[ $i -lt ${serverTimeout} ]] && [[ ${server_stopped} = false ]]; do
-      if [[ $i -ne 0 ]] && [[ $i = *0 ]]; then
+    while [[ $i -lt ${serverTimeout} && ${server_stopped} = false ]]; do
+      if [[ $i -ne 0 && $i = *0 ]]; then
         echo "server still running after ${i}s"
       fi
       sleep 1
@@ -154,7 +165,7 @@ elif [[ $action = start ]]; then
   # start
   if ! screen -ls "${screenName}" | grep -q "\.${screenName}\s"; then
     myecho "server ${screenName} told to start in ${sleepTime}s at $(date)"
-    screen -dmS "${screenName}" "${binDir}/scripts/runServer.sh" --config "${config_file}" --sleep "${sleepTime}" --wait-backup "${wait_backup}" --wait-update "${wait_update}" --cmd startCmd
+    screen -dmS "${screenName}" "${scriptsDir}/runServer.sh" --config "${config_file}" --sleep "${sleepTime}" --wait-backup "${wait_backup}" --wait-update "${wait_update}" --cmd startCmd
   else
     echo "server ${screenName} already running!"
     exit 1
@@ -252,10 +263,10 @@ elif [[ $action = status ]]; then
   fi
 elif [[ $action = backup ]]; then
   # backup
-  if [[ ${server_running} = false ]] || [[ ${wait_server} = true ]]; then
+  if [[ ${server_running} = false || ${wait_server} = true ]]; then
     if ! screen -ls "${backupScreenName}" | grep -q "\.${backupScreenName}\s"; then
       myecho "server ${screenName} told to do a backup in ${sleepTime}s at $(date)"
-      screen -d -m -S "${backupScreenName}" "${binDir}/scripts/doSafeBackup.sh" --config "${config_file}" --sleep "${sleepTime}" --wait-update "${wait_update}" --full-backup "${full_backup}"
+      screen -d -m -S "${backupScreenName}" "${scriptsDir}/doSafeBackup.sh" --config "${config_file}" --sleep "${sleepTime}" --wait-update "${wait_update}" --full-backup "${full_backup}"
     else
       echo "backup script already running!"
       exit 1
@@ -266,10 +277,10 @@ elif [[ $action = backup ]]; then
   fi
 elif [[ $action = update ]]; then
   # update
-  if [[ ${server_running} = false ]] || [[ ${wait_server} = true ]]; then
+  if [[ ${server_running} = false || ${wait_server} = true ]]; then
     if ! screen -ls "${updateScreenName}" | grep -q "\.${updateScreenName}\s"; then
       myecho "server ${screenName} told to update in ${sleepTime}s at $(date)"
-      screen -d -m -S "${updateScreenName}" "${binDir}/scripts/doSafeUpdate.sh" --config "${config_file}" --sleep "${sleepTime}" --wait-backup "${wait_backup}"
+      screen -d -m -S "${updateScreenName}" "${scriptsDir}/doSafeUpdate.sh" --config "${config_file}" --sleep "${sleepTime}" --wait-backup "${wait_backup}"
     else
       echo "update script already running!"
       exit 1

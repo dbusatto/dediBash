@@ -1,19 +1,35 @@
 #!/bin/bash
 # run the server
+# should be called from the bin folder
+binDir="$(pwd)"
+
+dirtyParentDir="${binDir}/.."
+if [[ ! -d $dirtyParentDir ]]; then
+  echo "directory ${dirtyParentDir} not found"
+  exit 1
+fi
+cd "$dirtyParentDir"
 
 parentDir="$(pwd)"
-
+scriptsDir="${binDir}/scripts"
 backupsDir="${parentDir}/serverBackups"
 logsDir="${parentDir}/serverLogs"
 tmpDir="${parentDir}/serverTmp"
 config_file="${parentDir}/config.cfg"
+
+cd "${binDir}"
+
+myecho() {
+  echo "$1"
+  echo "$1" >> "${logsDir}/serverScreensLog.log"
+}
 
 if [[ $1 = --config ]]; then
   shift
   config_file="$1"
   shift
 fi
-if [[ ! -f $config_file ]] || [[ ! -r $config_file ]] || [[ ! -x $config_file ]]; then
+if [[ ! -f $config_file || ! -r $config_file || ! -x $config_file ]]; then
   myecho "file ${config_file} not found from directory ${parentDir} or has bad permissions (needs at least r-x)"
   exit 1
 fi
@@ -24,10 +40,7 @@ if [[ -n $screenName ]]; then
 fi
 backupScreenName="${screenName}Backup"
 updateScreenName="${screenName}Update"
-myecho() {
-  echo "$1"
-  echo "$1" >> "${logsDir}/serverScreensLog.log"
-}
+
 sleepTime=0
 if [[ $1 = --sleep ]]; then
   shift
@@ -116,9 +129,10 @@ if screen -ls "${updateScreenName}" | grep -q "\.${updateScreenName}\s"; then
 fi
 
 myecho "server ${screenName} ${launchCmd} started at $(date) from config ${config_file}"
+cd "${parentDir}"
 $launchCmd
 stop_status="$?"
-cd "${parentDir}"
+cd "${binDir}"
 myecho "server ${screenName} ${launchCmd} stopped with status ${stop_status} at $(date)"
 
 exit 0
