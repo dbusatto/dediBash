@@ -5,10 +5,13 @@
 
 # Server files and backups
 /serverFiles/*
-/backups/*
+/serverTmp/*
+/serverLogs/*
+/serverBackups/*
 
 # Exceptions
-!backups/config_backups_model.cfg
-!config_model.cfg
-!serverFiles/README.md
-!serverFiles/testServer.sh
+!/serverBackups/config_backups_model.cfg
+!/config_model.cfg
+!/serverFiles/README.md
+!/serverFiles/testServer.sh
+!/examples/*
