@@ -42,6 +42,7 @@ if screen -ls "${screenName}" | grep -q "\.${screenName}\s"; then
   sleep 1
   "${binDir}/dediBash.sh" start --config "${config_file}" --wait-server --wait-backup
 elif [ "${ifNeeded}" = false ]; then
+  echo '"${binDir}/dediBash.sh" backup --config "${config_file}" "${backupOpts}"'
   "${binDir}/dediBash.sh" backup --config "${config_file}" "${backupOpts}"
 fi
 exit 0
