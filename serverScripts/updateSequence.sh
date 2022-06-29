@@ -33,6 +33,6 @@ if screen -ls "${screenName}" | grep -q "\.${screenName}\s"; then
 elif [ "${ifNeeded}" = false ]; then
   "${binDir}/dediBash.sh" backup --config "${configFile}" --full-backup
   sleep 1
-  "${binDir}/dediBash.sh" update --config "${configFile}" --wait-backup &>1
+  "${binDir}/dediBash.sh" update --config "${configFile}" --wait-backup
 fi
 exit 0
