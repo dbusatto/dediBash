@@ -235,7 +235,9 @@ elif [[ $action = status ]]; then
       echo "${hardcopyFile}.0 is not a file"
       exit 1
     fi
-    screen -r "${screenName}" -p 0 -X "${hardcopyFile}"
+    cd "${tmpDir}"
+    screen -r "${screenName}" -p 0 -X hardcopy
+    cd "${binDir}"
     sleep 1 # 0.1
     if [[ -f "${hardcopyFile}.0" ]]; then
       mv -f "${hardcopyFile}.0" "${logsDir}/lastStatus.log"
