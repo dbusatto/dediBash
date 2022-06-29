@@ -113,7 +113,7 @@ else
   server_running=false
 fi
 myecho "update started at $(date)"
-updateCmd
+updateCmd &> "${logsDir}/serverScreensCmdLog.log"
 stop_status="$?"
 cd "${position}"
 myecho "update finished with status ${stop_status} at $(date)"
