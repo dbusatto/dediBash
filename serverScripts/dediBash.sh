@@ -33,7 +33,7 @@ elif [[ ! -d $logsDir ]]; then
 fi
 
 if [[ ! -e $tmpDir ]]; then
-  mkdir -p $tmpDir
+  mkdir -p "$tmpDir"
 elif [[ ! -d $tmpDir ]]; then
   echo "$tmpDir is not a directory"
   exit 1
@@ -44,7 +44,7 @@ if [[ -e $hardcopyFile && ! -f $hardcopyFile ]]; then
   exit 1
 fi
 if [[ ! -e $backupDir ]]; then
-  mkdir -p $backupDir
+  mkdir -p "$backupDir"
 elif [[ ! -d $backupDir ]]; then
   echo "$backupDir is not a directory"
   exit 1
