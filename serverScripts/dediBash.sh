@@ -1,5 +1,7 @@
 #!/bin/bash
 
+startDir="$(pwd)"
+
 if [[ $0 != /* ]]; then
   dirtyServerScriptFile="$(pwd)/$0"
 else
@@ -21,7 +23,7 @@ scriptsDir="${binDir}/utils"
 backupsDir="${parentDir}/serverBackups"
 logsDir="${parentDir}/serverLogs"
 tmpDir="${parentDir}/serverTmp"
-config_file="${parentDir}/config.cfg"
+configFileDirty="${parentDir}/config.cfg"
 
 cd "${binDir}"
 
@@ -78,7 +80,7 @@ if [[ $action = -h ]]; then
 fi
 if [[ $1 = --config ]]; then
   shift
-  config_file="$1"
+  configFileDirty="$1"
   shift
 fi
 msg="emptyMsg"
@@ -124,11 +126,26 @@ if [[ $# -ne 0 ]]; then
   exit 1
 fi
 
-if [[ ! -f $config_file || ! -r $config_file || ! -x $config_file ]]; then
-  myecho "file ${config_file} not found from directory ${parentDir} or has bad permissions (needs at least r-x)"
+cd "${startDir}"
+if [[ $configFileDirty != /* ]]; then
+  dirtyConfigFile="$(pwd)/${configFileDirty}"
+else
+  dirtyConfigFile="${configFileDirty}"
+fi
+cd "$(dirname "$dirtyConfigFile")"
+
+configDir="$(pwd)"
+configFile="${configDir}/$(basename "${configFileDirty}")"
+
+cd "${binDir}"
+
+echo "config file ${configFile}"
+
+if [[ ! -f $configFile || ! -r $configFile || ! -x $configFile ]]; then
+  myecho "file ${configFile} not found from directory ${startDir} or has bad permissions (needs at least r-x)"
   exit 1
 fi
-. "${config_file}"
+. "${configFile}"
 if [[ -n $screenName ]]; then
   myecho "bad config load, no screenName found"
   exit 1
@@ -136,6 +153,9 @@ fi
 
 backupScreenName="${screenName}Backup"
 updateScreenName="${screenName}Update"
+
+echo "screen name ${screenName}"
+exit 0
 
 server_running=false
 if screen -ls "${screenName}" | grep -q "\.${screenName}\s"; then
@@ -169,7 +189,7 @@ elif [[ $action = start ]]; then
   # start
   if ! screen -ls "${screenName}" | grep -q "\.${screenName}\s"; then
     myecho "server ${screenName} told to start in ${sleepTime}s at $(date)"
-    screen -dmS "${screenName}" "${scriptsDir}/runServer.sh" --config "${config_file}" --sleep "${sleepTime}" --wait-backup "${wait_backup}" --wait-update "${wait_update}" --cmd startCmd
+    screen -dmS "${screenName}" "${scriptsDir}/runServer.sh" --config "${configFile}" --sleep "${sleepTime}" --wait-backup "${wait_backup}" --wait-update "${wait_update}" --cmd startCmd
   else
     echo "server ${screenName} already running!"
     exit 1
@@ -178,7 +198,7 @@ elif [[ $action = start ]]; then
 #   # start
 #   if ! screen -ls "${screenName}2" | grep -q "\.${screenName}2\s"; then
 #     myecho "server ${screenName}2 told to start in ${sleepTime}s at $(date)"
-#     screen -dmS "${screenName}2" "${scriptsDir}/runServer.sh" --config "${config_file}" --sleep "${sleepTime}" --wait-backup "${wait_backup}" --wait-update "${wait_update}" --cmd startCmdIsland
+#     screen -dmS "${screenName}2" "${scriptsDir}/runServer.sh" --config "${configFile}" --sleep "${sleepTime}" --wait-backup "${wait_backup}" --wait-update "${wait_update}" --cmd startCmdIsland
 #   else
 #     echo "server ${screenName}2 already running!"
 #     exit 1
@@ -270,7 +290,7 @@ elif [[ $action = backup ]]; then
   if [[ ${server_running} = false || ${wait_server} = true ]]; then
     if ! screen -ls "${backupScreenName}" | grep -q "\.${backupScreenName}\s"; then
       myecho "server ${screenName} told to do a backup in ${sleepTime}s at $(date)"
-      screen -d -m -S "${backupScreenName}" "${scriptsDir}/doSafeBackup.sh" --config "${config_file}" --sleep "${sleepTime}" --wait-update "${wait_update}" --full-backup "${full_backup}"
+      screen -d -m -S "${backupScreenName}" "${scriptsDir}/doSafeBackup.sh" --config "${configFile}" --sleep "${sleepTime}" --wait-update "${wait_update}" --full-backup "${full_backup}"
     else
       echo "backup script already running!"
       exit 1
@@ -284,7 +304,7 @@ elif [[ $action = update ]]; then
   if [[ ${server_running} = false || ${wait_server} = true ]]; then
     if ! screen -ls "${updateScreenName}" | grep -q "\.${updateScreenName}\s"; then
       myecho "server ${screenName} told to update in ${sleepTime}s at $(date)"
-      screen -d -m -S "${updateScreenName}" "${scriptsDir}/doSafeUpdate.sh" --config "${config_file}" --sleep "${sleepTime}" --wait-backup "${wait_backup}"
+      screen -d -m -S "${updateScreenName}" "${scriptsDir}/doSafeUpdate.sh" --config "${configFile}" --sleep "${sleepTime}" --wait-backup "${wait_backup}"
     else
       echo "update script already running!"
       exit 1
