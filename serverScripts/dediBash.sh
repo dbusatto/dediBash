@@ -73,7 +73,6 @@ if [[ $1 = --full-backup ]]; then
   full_backup=true
 fi
 if [[ $# -ne 0 ]]; then
-  echo "toto3 $@"
   usage
   exit 1
 fi
