@@ -231,7 +231,7 @@ elif [[ $action = status ]]; then
     echo -n "server ${screenName} running:"
     if [[ -f "${hardcopy}.0" ]]; then
       rm "${hardcopy}.0"
-    elif [[ -e "${hardcopy}.0" ]]
+    elif [[ -e "${hardcopy}.0" ]]; then
       echo "${hardcopy}.0 is not a file"
       exit 1
     fi
