@@ -229,20 +229,20 @@ elif [[ $action = status ]]; then
   # status
   if screen -ls "${screenName}" | grep -q "\.${screenName}\s"; then
     echo -n "server ${screenName} running:"
-    if [[ -f "${hardcopy}.0" ]]; then
-      rm "${hardcopy}.0"
-    elif [[ -e "${hardcopy}.0" ]]; then
-      echo "${hardcopy}.0 is not a file"
+    if [[ -f "${hardcopyFile}.0" ]]; then
+      rm "${hardcopyFile}.0"
+    elif [[ -e "${hardcopyFile}.0" ]]; then
+      echo "${hardcopyFile}.0 is not a file"
       exit 1
     fi
-    screen -r "${screenName}" -p 0 -X "${hardcopy}"
+    screen -r "${screenName}" -p 0 -X "${hardcopyFile}"
     sleep 1 # 0.1
-    if [[ -f "${hardcopy}.0" ]]; then
-      mv -f "${hardcopy}.0" "${logsDir}/lastStatus.log"
+    if [[ -f "${hardcopyFile}.0" ]]; then
+      mv -f "${hardcopyFile}.0" "${logsDir}/lastStatus.log"
       echo "($(tac "${logsDir}/lastStatus.log" |egrep -m 1 .))"
       #echo "$(head -n 6 lastStatus.log)"
     else
-      echo "screen no hardcopy found: ${hardcopy}.0 from $(pwd)"
+      echo "screen no hardcopy found: ${hardcopyFile}.0 from $(pwd)"
       exit 1
     fi
   else
@@ -250,33 +250,33 @@ elif [[ $action = status ]]; then
   fi
   if screen -ls "${backupScreenName}" | grep -q "\.${backupScreenName}\s"; then
     echo -n "server ${backupScreenName} running:"
-    if [[ -f "${hardcopy}.0" ]]; then
-      rm "${hardcopy}.0"
+    if [[ -f "${hardcopyFile}.0" ]]; then
+      rm "${hardcopyFile}.0"
     fi
-    screen -r "${backupScreenName}" -p 0 -X "${hardcopy}"
+    screen -r "${backupScreenName}" -p 0 -X "${hardcopyFile}"
     sleep 1 # 0.1
-    if [[ -f "${hardcopy}.0" ]]; then
-      mv -f "${hardcopy}.0" "${logsDir}/lastStatusBackup.log"
+    if [[ -f "${hardcopyFile}.0" ]]; then
+      mv -f "${hardcopyFile}.0" "${logsDir}/lastStatusBackup.log"
       echo "($(tac "${logsDir}/lastStatusBackup.log" |egrep -m 1 .))"
       #echo "$(head -n 6 lastStatusBackup.log)"
     else
-      echo "screen backup no hardcopy found: ${hardcopy}.0 from $(pwd)"
+      echo "screen backup no hardcopy found: ${hardcopyFile}.0 from $(pwd)"
       exit 1
     fi
   fi
   if screen -ls "${updateScreenName}" | grep -q "\.${updateScreenName}\s"; then
     echo -n "server ${updateScreenName} running:"
-    if [[ -f "${hardcopy}.0" ]]; then
-      rm "${hardcopy}.0"
+    if [[ -f "${hardcopyFile}.0" ]]; then
+      rm "${hardcopyFile}.0"
     fi
-    screen -r "${updateScreenName}" -p 0 -X "${hardcopy}"
+    screen -r "${updateScreenName}" -p 0 -X "${hardcopyFile}"
     sleep 1 # 0.1
-    if [[ -f "${hardcopy}.0" ]]; then
-      mv -f "${hardcopy}.0" "${logsDir}/lastStatusUpdate.log"
+    if [[ -f "${hardcopyFile}.0" ]]; then
+      mv -f "${hardcopyFile}.0" "${logsDir}/lastStatusUpdate.log"
       echo "($(tac "${logsDir}/lastStatusUpdate.log" |egrep -m 1 .))"
       #echo "$(head -n 6 lastStatusUpdate.log)"
     else
-      echo "screen update no hardcopy found: ${hardcopy}.0 from $(pwd)"
+      echo "screen update no hardcopy found: ${hardcopyFile}.0 from $(pwd)"
       exit 1
     fi
   fi
