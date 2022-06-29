@@ -139,8 +139,6 @@ configFile="${configDir}/$(basename "${configFileDirty}")"
 
 cd "${binDir}"
 
-echo "config file ${configFile}"
-
 if [[ ! -f $configFile || ! -r $configFile || ! -x $configFile ]]; then
   myecho "file ${configFile} not found from directory ${startDir} or has bad permissions (needs at least r-x)"
   exit 1
@@ -153,9 +151,6 @@ fi
 
 backupScreenName="${screenName}Backup"
 updateScreenName="${screenName}Update"
-
-echo "screen name ${screenName}"
-exit 0
 
 server_running=false
 if screen -ls "${screenName}" | grep -q "\.${screenName}\s"; then
