@@ -43,10 +43,10 @@ if [[ -e $hardcopyFile && ! -f $hardcopyFile ]]; then
   echo "${hardcopyFile} is not a file"
   exit 1
 fi
-if [[ ! -e $backupDir ]]; then
-  mkdir -p "$backupDir"
-elif [[ ! -d $backupDir ]]; then
-  echo "$backupDir is not a directory"
+if [[ ! -e $backupsDir ]]; then
+  mkdir -p "$backupsDir"
+elif [[ ! -d $backupsDir ]]; then
+  echo "$backupsDir is not a directory"
   exit 1
 fi
 
