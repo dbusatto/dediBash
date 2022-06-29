@@ -255,7 +255,7 @@ elif [[ $action = status ]]; then
     if [[ -f "${hardcopyFile}.0" ]]; then
       rm "${hardcopyFile}.0"
     fi
-    screen -r "${backupScreenName}" -p 0 -X "${hardcopyFile}"
+    screen -r "${backupScreenName}" -p 0 -X hardcopy
     sleep 1 # 0.1
     if [[ -f "${hardcopyFile}.0" ]]; then
       mv -f "${hardcopyFile}.0" "${logsDir}/lastStatusBackup.log"
@@ -271,7 +271,7 @@ elif [[ $action = status ]]; then
     if [[ -f "${hardcopyFile}.0" ]]; then
       rm "${hardcopyFile}.0"
     fi
-    screen -r "${updateScreenName}" -p 0 -X "${hardcopyFile}"
+    screen -r "${updateScreenName}" -p 0 -X hardcopy
     sleep 1 # 0.1
     if [[ -f "${hardcopyFile}.0" ]]; then
       mv -f "${hardcopyFile}.0" "${logsDir}/lastStatusUpdate.log"
