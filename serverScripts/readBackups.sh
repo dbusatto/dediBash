@@ -3,22 +3,19 @@
 . "$(dirname "$0")/utils/initVars.sh"
 cd "${binDir}"
 
+myecho() {
+  echo "$1"
+  echo "$1" >> "${logsDir}/serverScreensLog.log"
+}
+
 if [[ $1 = --config ]]; then
   shift
-  config_file="$1"
+  configFileDirty="$1"
   shift
 fi
-if [[ ! -f $config_file || ! -r $config_file || ! -x $config_file ]]; then
-  myecho "file ${config_file} not found from directory ${parentDir} or has bad permissions (needs at least r-x)"
-  exit 1
-fi
-. "${config_file}"
-if [[ -z $screenName ]]; then
-  echo "bad config load, no screenName found"
-  exit 1
-fi
-backupScreenName="${screenName}Backup"
-updateScreenName="${screenName}Update"
+
+. "${binDir}/utils/initConfig.sh"
+cd "${binDir}"
 
 bytesToHuman() {
   b=${1:-0}; d=''; s=0; S=(Bytes {K,M,G,T,E,P,Y,Z}B)

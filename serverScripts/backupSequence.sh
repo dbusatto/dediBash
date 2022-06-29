@@ -10,20 +10,12 @@ myecho() {
 
 if [[ $1 = --config ]]; then
   shift
-  config_file="$1"
+  configFileDirty="$1"
   shift
 fi
-if [[ ! -f $config_file || ! -r $config_file || ! -x $config_file ]]; then
-  myecho "file ${config_file} not found from directory ${parentDir} or has bad permissions (needs at least r-x)"
-  exit 1
-fi
-. "${config_file}"
-if [[ -z $screenName ]]; then
-  myecho "bad config load, no screenName found"
-  exit 1
-fi
-backupScreenName="${screenName}Backup"
-updateScreenName="${screenName}Update"
+
+. "${binDir}/utils/initConfig.sh"
+cd "${binDir}"
 
 ifNeeded=false
 if [[ $1 = --if-needed ]]; then
@@ -36,13 +28,13 @@ if [[ $1 = --full-backup ]]; then
   backupOpts="--full-backup"
 fi
 if screen -ls "${screenName}" | grep -q "\.${screenName}\s"; then
-  "${binDir}/dediBash.sh" stop --config "${config_file}"
+  "${binDir}/dediBash.sh" stop --config "${configFile}"
   sleep 1
-  "${binDir}/dediBash.sh" backup --config "${config_file}" --wait-server "${backupOpts}"
+  "${binDir}/dediBash.sh" backup --config "${configFile}" --wait-server "${backupOpts}"
   sleep 1
-  "${binDir}/dediBash.sh" start --config "${config_file}" --wait-server --wait-backup
+  "${binDir}/dediBash.sh" start --config "${configFile}" --wait-server --wait-backup
 elif [ "${ifNeeded}" = false ]; then
-  echo '"${binDir}/dediBash.sh" backup --config "${config_file}" "${backupOpts}"'
-  "${binDir}/dediBash.sh" backup --config "${config_file}" "${backupOpts}"
+  echo "${binDir}/dediBash.sh backup --config ${configFile} ${backupOpts}"
+  "${binDir}/dediBash.sh" backup --config "${configFile}" "${backupOpts}"
 fi
 exit 0

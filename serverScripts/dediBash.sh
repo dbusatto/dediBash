@@ -2,6 +2,11 @@
 
 . "$(dirname "$0")/utils/initVars.sh"
 cd "${binDir}"
+myecho() {
+  echo "$1"
+  echo "$1" >> "${logsDir}/serverLog.log"
+  echo "$1" >> "${logsDir}/serverScreensLog.log"
+}
 
 usage() {
   echo "usage : $(basename $0) action [--config FILE] [--msg TEXT] [--sleep TIME] [--wait-server] [--wait-backup] [--wait-update] [--full-backup]
@@ -13,11 +18,6 @@ usage() {
     --wait-backup wait for backup to end before action, only supported by start|update
     --wait-update wait for update to end before action, only supported by start|backup
     --full-backup backup not limited to saves but apply to all server files instead, only supported by backup"
-}
-myecho() {
-  echo "$1"
-  echo "$1" >> "${logsDir}/serverLog.log"
-  echo "$1" >> "${logsDir}/serverScreensLog.log"
 }
 if [[ $# -lt 1 ]]; then
   usage
@@ -77,31 +77,8 @@ if [[ $# -ne 0 ]]; then
   exit 1
 fi
 
-cd "${startDir}"
-if [[ $configFileDirty != /* ]]; then
-  dirtyConfigFile="$(pwd)/${configFileDirty}"
-else
-  dirtyConfigFile="${configFileDirty}"
-fi
-cd "$(dirname "$dirtyConfigFile")"
-
-configDir="$(pwd)"
-configFile="${configDir}/$(basename "${configFileDirty}")"
-
+. "${binDir}/utils/initConfig.sh"
 cd "${binDir}"
-
-if [[ ! -f $configFile || ! -r $configFile || ! -x $configFile ]]; then
-  myecho "file ${configFile} not found from directory ${startDir} or has bad permissions (needs at least r-x)"
-  exit 1
-fi
-. "${configFile}"
-if [[ -z $screenName ]]; then
-  myecho "bad config load, no screenName found"
-  exit 1
-fi
-
-backupScreenName="${screenName}Backup"
-updateScreenName="${screenName}Update"
 
 server_running=false
 if screen -ls "${screenName}" | grep -q "\.${screenName}\s"; then
