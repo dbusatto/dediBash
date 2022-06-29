@@ -9,11 +9,11 @@ while [ ! "$user_input" = "stop" ]; do
   read user_input
   echo "$user_input"
   if [[ $user_input = save ]]; then
-    save_content = "save content $RANDOM"
+    save_content="save content $RANDOM"
     echo "saving: ${save_content}"
-    echo $save_content > save_file.txt
+    echo "${save_content}" > save_file.txt
   elif [[ $user_input = load ]]; then
-    save_content = "$(cat save_file.txt)"
+    save_content="$(cat save_file.txt)"
     echo "loaded: ${save_content}"
   fi
 done
