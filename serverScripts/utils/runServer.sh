@@ -1,6 +1,9 @@
 #!/bin/bash
 # run the server
 # should be called from the bin folder
+
+echo "calling $@"
+
 binDir="$(pwd)"
 
 dirtyParentDir="${binDir}/.."
