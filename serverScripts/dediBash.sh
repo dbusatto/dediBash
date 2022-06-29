@@ -40,7 +40,7 @@ elif [[ ! -d $tmpDir ]]; then
   echo "$tmpDir is not a directory"
   exit 1
 fi
-hardcopyFile="${tmpDir}/hardcopy"
+hardcopyFile="${binDir}/hardcopy"
 if [[ -e $hardcopyFile && ! -f $hardcopyFile ]]; then
   echo "${hardcopyFile} is not a file"
   exit 1
