@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "calling $@"
+echo "calling $0 | $1 | $2 | $3 | $4 | $5"
 
 . "$(dirname "$0")/utils/initVars.sh"
 cd "${binDir}"
