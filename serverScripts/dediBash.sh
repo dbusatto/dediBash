@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo "calling $0 | $1 | $2 | $3 | $4 | $5"
-
 . "$(dirname "$0")/utils/initVars.sh"
 cd "${binDir}"
 myecho() {
@@ -22,12 +20,14 @@ usage() {
     --full-backup backup not limited to saves but apply to all server files instead, only supported by backup"
 }
 if [[ $# -lt 1 ]]; then
+  echo "toto1"
   usage
   exit 1
 fi
 action="$1"
 shift
 if [[ $action = -h ]]; then
+  echo "toto2"
   usage
   exit 1
 fi
@@ -75,6 +75,7 @@ if [[ $1 = --full-backup ]]; then
   full_backup=true
 fi
 if [[ $# -ne 0 ]]; then
+  echo "toto3"
   usage
   exit 1
 fi
@@ -109,6 +110,7 @@ if screen -ls "${screenName}" | grep -q "\.${screenName}\s"; then
 fi
 if [[ $action = help ]]; then
   # help
+  echo "toto4"
   usage
 elif [[ $action = start ]]; then
   # start
@@ -241,6 +243,7 @@ elif [[ $action = update ]]; then
     exit 1
   fi
 else
+  echo "toto5"
   usage
   exit 1
 fi
