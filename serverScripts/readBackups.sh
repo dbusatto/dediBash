@@ -1,21 +1,6 @@
 #!/bin/bash
-# should be called from the bin folder
-binDir="$(pwd)"
 
-dirtyParentDir="${binDir}/.."
-if [[ ! -d $dirtyParentDir ]]; then
-  echo "directory ${dirtyParentDir} not found"
-  exit 1
-fi
-cd "$dirtyParentDir"
-
-parentDir="$(pwd)"
-scriptsDir="${binDir}/utils"
-backupsDir="${parentDir}/serverBackups"
-logsDir="${parentDir}/serverLogs"
-tmpDir="${parentDir}/serverTmp"
-config_file="${parentDir}/config.cfg"
-
+. "$(dirname "$0")/utils/initVars.sh"
 cd "${binDir}"
 
 if [[ $1 = --config ]]; then
