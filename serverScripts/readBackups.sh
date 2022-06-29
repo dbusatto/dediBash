@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "calling $@"
+
 . "$(dirname "$0")/utils/initVars.sh"
 cd "${binDir}"
 
