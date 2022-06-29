@@ -146,7 +146,7 @@ if [[ ! -f $configFile || ! -r $configFile || ! -x $configFile ]]; then
   exit 1
 fi
 . "${configFile}"
-if [[ -n $screenName ]]; then
+if [[ -z $screenName ]]; then
   myecho "bad config load, no screenName found"
   exit 1
 fi
