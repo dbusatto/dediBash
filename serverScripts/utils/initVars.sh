@@ -22,7 +22,7 @@ parentDir="$(pwd)"
 scriptsDir="${binDir}/utils"
 backupsDir="${parentDir}/serverBackups"
 logsDir="${parentDir}/serverLogs"
-tmpDir="${parentDir}/serverTmp" # TODO remove?
+tmpDir="${parentDir}/serverTmp"
 configFileDirty="${parentDir}/config.cfg"
 
 cd "${binDir}"
